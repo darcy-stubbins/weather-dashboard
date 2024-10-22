@@ -17,7 +17,7 @@ class WeatherApiController extends Controller
         $client = new Client;
 
         //given city loaction 
-        $givenLocation = 'Derby';
+        $givenLocation = 'New York';
 
 
 
