@@ -1,7 +1,7 @@
 <?php
 
+use App\Http\Controllers\WeatherApiController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+//route for the weather view 
+Route::get('/', [WeatherApiController::class, 'getWeather']);
