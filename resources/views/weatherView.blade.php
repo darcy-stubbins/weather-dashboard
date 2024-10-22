@@ -18,8 +18,10 @@
 </head>
 
 <body>
-    my cool weather app!
-    {{ dd($weatherData) }}
+    <h1>The weather in {{ $weatherData['name'] }} is currently {{ $weatherData['weather'][0]['description'] }}, with
+        temperatures of {{ $weatherData['main']['temp'] }} degrees.</h1>
+
+    <!-- {{ dd($weatherData) }} -->
 </body>
 
 </html>
