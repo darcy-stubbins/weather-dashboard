@@ -7,25 +7,28 @@ use GuzzleHttp\Client;
 
 class WeatherApiController extends Controller
 {
-    //get weather method 
-    public function getWeather()
+    //my api key 
+    private string $apiKey;
+
+    //new guzzle client instance 
+    private Client $client;
+
+    public function __construct()
     {
-        //my api key 
-        $apiKey = env('WEATHER_API_KEY');
+        $this->apiKey = env('WEATHER_API_KEY');
+        $this->client = new Client();
+    }
 
-        //new guzzle client instance 
-        $client = new Client;
-
+    private function getApiWeatherData(string $foundLocation)
+    {
         //given city loaction 
-        $givenLocation = 'New York';
-
-
+        $givenLocation = $foundLocation;
 
         //geocode api to get the location, to provide to the weather API 
-        $clientLocation = "http://api.openweathermap.org/geo/1.0/direct?q={$givenLocation}&appid={$apiKey}";
+        $clientLocation = "http://api.openweathermap.org/geo/1.0/direct?q={$givenLocation}&appid={$this->apiKey}";
 
         //my GET request to the API 
-        $ApiLocationResponse = $client->get($clientLocation);
+        $ApiLocationResponse = $this->client->get($clientLocation);
 
         //get the response body (true returns as array rather than object)
         $locationResponse = json_decode($ApiLocationResponse->getBody(), true);
@@ -37,15 +40,31 @@ class WeatherApiController extends Controller
 
 
         //weather api url with location and metric measurements 
-        $apiEndpoint = "https://api.openweathermap.org/data/2.5/weather?lat={$lat}&lon={$lon}&units=metric&appid={$apiKey}";
+        $apiEndpoint = "https://api.openweathermap.org/data/2.5/weather?lat={$lat}&lon={$lon}&units=metric&appid={$this->apiKey}";
 
         //my GET request to the API 
-        $ApiWeatherResponse = $client->get($apiEndpoint);
+        $ApiWeatherResponse = $this->client->get($apiEndpoint);
 
         //get the response body (true returns as array rather than object)
-        $apiData = json_decode($ApiWeatherResponse->getBody(), true);
+        return json_decode($ApiWeatherResponse->getBody(), true);
+    }
+
+    //post the inputted location from the client 
+    public function postClientLocation(Request $request)
+    {
+        //location recieved from client
+        $foundLocation = $request->location;
+
+        $apiData = $this->getApiWeatherData($foundLocation);
 
         //return the weather data 
         return view('weatherView', ['weatherData' => $apiData]);
+    }
+
+    //get weather method 
+    public function getWeather()
+    {
+        //return the weather data 
+        return view('weatherView');
     }
 }
