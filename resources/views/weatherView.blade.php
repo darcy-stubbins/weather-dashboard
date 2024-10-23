@@ -18,25 +18,31 @@
 </head>
 
 <body>
-    <div>
-        <form class="bg-white px-10 pt-6 pb-8 mb-4" action="{{url('/')}}" method="post">
-            @csrf
-            <label class="block text-black text-lg font-bold mb-2" for="location">
-                Enter Your Location
-            </label>
-            <input class=" appearance-none border rounded py-2 px-3 text-black leading-tight" id="location" type="text"
-                name="location" placeholder="location">
-            <button
-                class="bg-transparent hover:bg-black text-black font-semibold hover:text-white py-2 px-3 border border-black hover:border-transparent rounded">
-                Confirm Location
-            </button>
-        </form>
-        @if (isset($weatherData))
-            <div class="m-10 text-lg font-bold">
-                The weather in {{ $weatherData['name'] }} is currently {{ $weatherData['weather'][0]['description'] }},
-                with temperatures of {{ $weatherData['main']['temp'] }} °C.
+    <div class="flex justify-center align-middle m-10 mt-20">
+        <!-- card -->
+        <div class="rounded overflow-hidden outline">
+            <div class="px-6 py-4">
+                <form action="{{url('/')}}" method="post">
+                    @csrf
+                    <label class="block text-black text-lg font-bold mb-2" for="location">
+                        Enter Your Location
+                    </label>
+                    <input class=" appearance-none border rounded py-2 px-3 text-black leading-tight" id="location"
+                        type="text" name="location" placeholder="location">
+                    <button
+                        class="bg-transparent hover:bg-black text-black font-semibold hover:text-white py-2 px-3 border border-black hover:border-transparent rounded">
+                        Confirm Location
+                    </button>
+                </form>
+                @if (isset($weatherData))
+                    <div class="m-10 text-lg font-bold">
+                        The weather in {{ $weatherData['name'] }} is currently
+                        {{ $weatherData['weather'][0]['description'] }},
+                        with temperatures of {{ $weatherData['main']['temp'] }} °C.
+                    </div>
+                @endif
             </div>
-        @endif
+        </div>
     </div>
 </body>
 

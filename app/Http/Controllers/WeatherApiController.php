@@ -39,8 +39,6 @@ class WeatherApiController extends Controller
         $lat = $locationResponse[0]['lat'];
         $lon = $locationResponse[0]['lon'];
 
-
-
         //weather api url with location and metric measurements 
         $apiEndpoint = "https://api.openweathermap.org/data/2.5/weather?lat={$lat}&lon={$lon}&units=metric&appid={$this->apiKey}";
 
