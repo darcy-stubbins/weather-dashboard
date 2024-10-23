@@ -13,12 +13,14 @@ class WeatherApiController extends Controller
     //new guzzle client instance 
     private Client $client;
 
+    //constructor 
     public function __construct()
     {
         $this->apiKey = env('WEATHER_API_KEY');
         $this->client = new Client();
     }
 
+    //get the weather data from the api 
     private function getApiWeatherData(string $foundLocation)
     {
         //given city loaction 
@@ -55,13 +57,14 @@ class WeatherApiController extends Controller
         //location recieved from client
         $foundLocation = $request->location;
 
+        //parse the found location into the function getApiweatherData
         $apiData = $this->getApiWeatherData($foundLocation);
 
         //return the weather data 
         return view('weatherView', ['weatherData' => $apiData]);
     }
 
-    //get weather method 
+    //get the default weather view (without user inputting location)
     public function getWeather()
     {
         //return the weather data 
