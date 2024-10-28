@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
+use Validator;
 
 class WeatherApiController extends Controller
 {
@@ -52,6 +53,11 @@ class WeatherApiController extends Controller
     //post the inputted location from the client 
     public function postClientLocation(Request $request)
     {
+        //validating the user has inputted data 
+        Validator::make($request->input(), [
+            'location' => 'required',
+        ], ['location' => 'my custom location errror mesage'])->validate();
+
         //location recieved from client
         $foundLocation = $request->location;
 
@@ -61,6 +67,14 @@ class WeatherApiController extends Controller
         //return the weather data 
         return view('weatherView', ['weatherData' => $apiData]);
     }
+
+
+
+
+
+
+
+
 
     //get the default weather view (without user inputting location)
     public function getWeather()
