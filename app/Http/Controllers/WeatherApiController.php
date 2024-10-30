@@ -21,10 +21,32 @@ class WeatherApiController extends Controller
         $this->client = new Client();
     }
 
-    //get the weather data from the api 
-    private function getApiWeatherData(string $foundLocation)
+    //get the default weather view (without user inputting location)
+    public function getWeather()
     {
-        //given city loaction 
+        //return the weather data 
+        return view('weatherView');
+    }
+
+    //post the inputted location from the client 
+    public function postClientLocation(Request $request)
+    {
+        //validating the user has inputted data 
+        Validator::make($request->input(), [
+            'location' => 'required',
+        ], ['location' => 'my custom location error message'])->validate();
+
+        //location recieved from client
+        $foundLocation = $request->location;
+
+        //parse the found location into the function getLocationDetails
+        return $this->getLocationDetails($foundLocation);
+    }
+
+    //get the lat and lon of client inputted location and pase into their respective functions (getCurrentWeatherData and getFutureWeatherData)
+    public function getLocationDetails(string $foundLocation)
+    {
+        //given location 
         $givenLocation = $foundLocation;
 
         //geocode api to get the location, to provide to the weather API 
@@ -40,46 +62,39 @@ class WeatherApiController extends Controller
         $lat = $locationResponse[0]['lat'];
         $lon = $locationResponse[0]['lon'];
 
+        //parse the lat and lon into the function getCurrentWeatherData
+        $currentApiData = $this->getCurrentWeatherData($lat, $lon);
+
+        //parse the lat and lon into the function getFutureWeatherData
+        $futureApiData = $this->getFutureWeatherData($lat, $lon);
+
+        //return the weather data 
+        return view('weatherView', ['weatherData' => $currentApiData, 'futureWeatherData' => $futureApiData]);
+    }
+
+    //get the current weather data from the api 
+    private function getCurrentWeatherData(string $lat, string $lon)
+    {
         //weather api url with location and metric measurements 
         $apiEndpoint = "https://api.openweathermap.org/data/2.5/weather?lat={$lat}&lon={$lon}&units=metric&appid={$this->apiKey}";
 
         //my GET request to the API 
         $ApiWeatherResponse = $this->client->get($apiEndpoint);
 
-        //get the response body (true returns as array rather than object)
+        //get the response body
         return json_decode($ApiWeatherResponse->getBody(), true);
     }
 
-    //post the inputted location from the client 
-    public function postClientLocation(Request $request)
+    //get the upcoming weather data from the api 
+    private function getFutureWeatherData(string $lat, string $lon)
     {
-        //validating the user has inputted data 
-        Validator::make($request->input(), [
-            'location' => 'required',
-        ], ['location' => 'my custom location errror mesage'])->validate();
+        //weather api url with location and metric measurements 
+        $apiEndpoint = "http://api.openweathermap.org/data/2.5/forecast?lat={$lat}&lon={$lon}&appid={$this->apiKey}";
 
-        //location recieved from client
-        $foundLocation = $request->location;
+        //my GET request to the API 
+        $ApiWeatherResponse = $this->client->get($apiEndpoint);
 
-        //parse the found location into the function getApiweatherData
-        $apiData = $this->getApiWeatherData($foundLocation);
-
-        //return the weather data 
-        return view('weatherView', ['weatherData' => $apiData]);
-    }
-
-
-
-
-
-
-
-
-
-    //get the default weather view (without user inputting location)
-    public function getWeather()
-    {
-        //return the weather data 
-        return view('weatherView');
+        //get the response body
+        return json_decode($ApiWeatherResponse->getBody(), true);
     }
 }

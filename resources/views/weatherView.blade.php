@@ -61,9 +61,17 @@
         <!-- CARD - to display the upoming weather -->
         <div class="col-start-2 col-span-1 rounded overflow-hidden outline bg-white">
             <div class="px-6 py-4 text-center">
-                **this will show upcoming weather**
+                @if (isset($futureWeatherData))
+                    <div>
+                        {{ $futureWeatherData['list'][6]['weather'][0]['description'] }}
+                    </div>
+                @endif
             </div>
         </div>
+
+
+
+
         <!-- CARD - to display historical weather data -->
         <div class="col-start-1 col-span-2 rounded overflow-hidden outline bg-white">
             <div class="px-6 py-4 text-center">
