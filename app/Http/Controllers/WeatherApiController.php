@@ -28,7 +28,7 @@ class WeatherApiController extends Controller
         return view('weatherView');
     }
 
-    //post the inputted location from the client 
+    //post the inputted location from the client and return the view  
     public function postClientLocation(Request $request)
     {
         //validating the user has inputted data 
@@ -39,8 +39,8 @@ class WeatherApiController extends Controller
         //location recieved from client
         $foundLocation = $request->location;
 
-        //parse the found location into the function getLocationDetails
-        return $this->getLocationDetails($foundLocation);
+        //return the weather data while passing in the client location 
+        return view('weatherView', $this->getLocationDetails($foundLocation));
     }
 
     //get the lat and lon of client inputted location and pase into their respective functions (getCurrentWeatherData and getFutureWeatherData)
@@ -69,7 +69,8 @@ class WeatherApiController extends Controller
         $futureApiData = $this->getFutureWeatherData($lat, $lon);
 
         //return the weather data 
-        return view('weatherView', ['weatherData' => $currentApiData, 'futureWeatherData' => $futureApiData]);
+        return ['weatherData' => $currentApiData, 'futureWeatherData' => $futureApiData];
+
     }
 
     //get the current weather data from the api 
@@ -89,7 +90,7 @@ class WeatherApiController extends Controller
     private function getFutureWeatherData(string $lat, string $lon)
     {
         //weather api url with location and metric measurements 
-        $apiEndpoint = "http://api.openweathermap.org/data/2.5/forecast?lat={$lat}&lon={$lon}&appid={$this->apiKey}";
+        $apiEndpoint = "http://api.openweathermap.org/data/2.5/forecast?lat={$lat}&lon={$lon}&units=metric&appid={$this->apiKey}";
 
         //my GET request to the API 
         $ApiWeatherResponse = $this->client->get($apiEndpoint);
