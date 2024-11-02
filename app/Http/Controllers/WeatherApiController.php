@@ -58,19 +58,21 @@ class WeatherApiController extends Controller
         //get the response body (true returns as array rather than object)
         $locationResponse = json_decode($ApiLocationResponse->getBody(), true);
 
-        //the lattitude and longitude 
-        $lat = $locationResponse[0]['lat'];
-        $lon = $locationResponse[0]['lon'];
+        if ($locationResponse) {
+            //the lattitude and longitude 
+            $lat = $locationResponse[0]['lat'];
+            $lon = $locationResponse[0]['lon'];
 
-        //parse the lat and lon into the function getCurrentWeatherData
-        $currentApiData = $this->getCurrentWeatherData($lat, $lon);
+            //parse the lat and lon into the function getCurrentWeatherData
+            $currentApiData = $this->getCurrentWeatherData($lat, $lon);
 
-        //parse the lat and lon into the function getFutureWeatherData
-        $futureApiData = $this->getFutureWeatherData($lat, $lon);
+            //parse the lat and lon into the function getFutureWeatherData
+            $futureApiData = $this->getFutureWeatherData($lat, $lon);
 
-        //return the weather data 
-        return ['weatherData' => $currentApiData, 'futureWeatherData' => $futureApiData];
-
+            //return the weather data 
+            return ['weatherData' => $currentApiData, 'futureWeatherData' => $futureApiData];
+        }
+        return [];
     }
 
     //get the current weather data from the api 
